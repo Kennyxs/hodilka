@@ -20,11 +20,19 @@ class Clasprite(pygame.sprite.Sprite):
 
     def update(self):
         press = pygame.key.get_pressed()
+        self.vector.update(0,0)
         if press[pygame.K_UP] is True:
             self.vector.y = -1
         if press[pygame.K_DOWN] is True:
             self.vector.y = 1
+        if press[pygame.K_LEFT] is True:
+            self.vector.x = -1
+        if press[pygame.K_RIGHT] is True:
+            self.vector.x = 1
+        # if self.vector.length() > 0:
+        #     pass
         self.rect.y += self.vector.y
+        self.rect.x += self.vector.x
         self.animation()
 
         
@@ -44,10 +52,19 @@ class Clasprite(pygame.sprite.Sprite):
             x = 0
     
     def animation(self):
-        if self.vector.length() > 0:
+        print(pygame.time.get_ticks())
+        if self.vector.length() > 0  :
+            num = []
             if self.vector.y >0:
-                if self.frame < self.skolko:
-                    self.delitelb = self.listt_d[self.frame]
-                    self.frame +=1
-                else:
-                    self.frame = 0
+                num = self.listt_d
+            if self.vector.y < 0:
+                num = self.listt_u
+            if self.vector.x > 0:
+                num = self.listt_r
+            if self.vector.x < 0:
+                num = self.listt_l
+            if self.frame < self.skolko:
+                self.delitelb = num[self.frame]
+                self.frame +=1
+            else:
+                self.frame = 0
