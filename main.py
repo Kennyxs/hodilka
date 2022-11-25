@@ -1,13 +1,14 @@
 import pygame
 import sprites
+import maper
 
 stop = 1
 surface = pygame.display.set_mode((500, 500))
 image = pygame.image.load("playerpng.png")
 player = sprites.Clasprite(image)
 fps = pygame.time.Clock()
-
-
+map = maper.Map("map.csv", 'mapstuff.png')
+print(map.list)
 
 
 while stop > 0:
