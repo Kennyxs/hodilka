@@ -12,7 +12,7 @@ class Clasprite(pygame.sprite.Sprite):
         self.rect = self.delitelb.get_rect()
         self.skolko = len(self.listt_d)
         self.frame = 0
-        
+        self.secanimation = 0
 
         
     def draw(self, surface):
@@ -52,8 +52,10 @@ class Clasprite(pygame.sprite.Sprite):
             x = 0
     
     def animation(self):
-        print(pygame.time.get_ticks())
-        if self.vector.length() > 0  :
+        sec = pygame.time.get_ticks()
+        
+        if self.vector.length() > 0  and sec - self.secanimation >= 500:
+            self.secanimation = pygame.time.get_ticks()
             num = []
             if self.vector.y >0:
                 num = self.listt_d
@@ -68,3 +70,4 @@ class Clasprite(pygame.sprite.Sprite):
                 self.frame +=1
             else:
                 self.frame = 0
+            
