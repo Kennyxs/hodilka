@@ -15,8 +15,8 @@ class Clasprite(pygame.sprite.Sprite):
         self.secanimation = 0
 
         
-    def draw(self, surface):
-        surface.blit(self.delitelb, self.rect)
+    def draw(self, surface, certainrect):
+        surface.blit(self.delitelb, certainrect)
 
     def update(self):
         press = pygame.key.get_pressed()

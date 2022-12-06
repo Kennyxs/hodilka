@@ -1,7 +1,7 @@
 import pygame
 import sprites
 import maper
-
+from settings import *
 # stop = 1
 # surface = pygame.display.set_mode((500, 500))
 # image = pygame.image.load("playerpng.png")
@@ -35,6 +35,8 @@ class Game:
         self.image = pygame.image.load(self.png)
         self.player = sprites.Clasprite(self.image)
         self.fps = pygame.time.Clock() 
+        self.camera = maper.Camera()
+        
         
         self.mapp = maper.Map(self.map, self.mappng)
         
@@ -49,13 +51,14 @@ class Game:
         return stop
     def update(self):
         self.player.update()
+        self.camera.spy(self.player)
         pygame.display.update()
 
     def draw(self):
         self.surface.fill((0,0,0))
-        
-        self.mapp.drawplitochnik(self.surface)
-        self.player.draw(self.surface)
+        for plitka in self.mapp.plitochnikkid:
+            plitka.draw(self.surface, self.camera.newrectsprite(plitka.rect))
+        self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
     def run(self):
         stop = 1
         self.new()
@@ -65,5 +68,5 @@ class Game:
             self.update()
             self.fps.tick(60)
 
-game = Game(500, 500, "playerpng.png", "map.csv", 'mapstaff.png')
+game = Game(WEIDTH, HIGHT, "playerpng.png", "map.csv", 'mapstaff.png')
 game.run()
