@@ -3,7 +3,7 @@ import dop
 
 
 class Clasprite(pygame.sprite.Sprite):
-    def __init__(self,image, place_x = 0, place_y = 0, ):
+    def __init__(self,image, game, place_x = 0, place_y = 0):
         self.vector = pygame.math.Vector2()
         self.image = image
         self.player = dop.imagecuter(image = image)
@@ -13,6 +13,8 @@ class Clasprite(pygame.sprite.Sprite):
         self.skolko = len(self.listt_d)
         self.frame = 0
         self.secanimation = 0
+        self.game =  game
+        self.littlerect = pygame.rect.Rect(self.rect.x -15,self.rect.y +15, self.rect.width//2, self.rect.height//2)
 
         
     def draw(self, surface, certainrect):
@@ -29,8 +31,8 @@ class Clasprite(pygame.sprite.Sprite):
             self.vector.x = -1
         if press[pygame.K_RIGHT] is True:
             self.vector.x = 1
-        # if self.vector.length() > 0:
-        #     pass
+        if self.wallwalker(self.game.spritemaplist):
+            self.vector.update(0,0)
         self.rect.y += self.vector.y
         self.rect.x += self.vector.x
         self.animation()
@@ -71,3 +73,9 @@ class Clasprite(pygame.sprite.Sprite):
             else:
                 self.frame = 0
             
+    def wallwalker(self, spritemaplist):
+        mover = self.rect.move((self.vector.x, self.vector.y))
+        for t in spritemaplist:
+            if mover.colliderect(t.rect) and t.boolean is True:
+                return True
+        return False

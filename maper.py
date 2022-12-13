@@ -12,6 +12,9 @@ class Map:
         self.imageall  = pygame.image.load(self.imagefile)
         self.imlist = self.imager(16)
         self.plitochnikkid = self.plitochnik(self.newsizew)
+        self.sizemapxe = len(self.list[0])*self.newsizew
+        self.sizemapye = len(self.list)*self.newsizew
+    
         
     def csvv(self):
         file = open (self.mapfile)
@@ -55,7 +58,7 @@ class Map:
             indeks = len(ryad)
             for stolbec in range(indeks):
                 imagenow = ryad[stolbec]
-                img = Plitka(self.imlist[int(imagenow)], y, x)
+                img = Plitka(self.imlist[int(imagenow)], y, x,int(imagenow))
                 plitochka.append(img)
                 x += imageweidth
             y +=imageweidth
@@ -68,9 +71,11 @@ class Map:
 
 
 class Plitka:
-    def __init__(self, plitaimg, y, x) -> None:
+    def __init__(self, plitaimg, y, x, number) -> None:
         self.plitaimg = plitaimg
         self.rect = plitaimg.get_rect(topleft = (x, y))
+        self.number = number
+        self.boolean = True if number in WALL_IDS else False
     def draw(self,surface,newrect):
         surface.blit(self.plitaimg, newrect)
 
@@ -79,22 +84,25 @@ class Plitka:
 
 
 class Camera:
-    def __init__(self):
+    def __init__(self, mapw,maph):
         self.move = (0, 0)
+        self.mapw = mapw
+        self.maph = maph
 
     def spy(self, player):
-        x = - player.rect.x + WEIDTH//2
-        y = - player.rect.y + HIGHT//2
-        if x < 0:
-            x = 0
-        if x> WEIDTH//2:
-            x = 0
-        if y<0:
-            y = 0
-        if y> HIGHT//2:
-            y = 0
+        dx = - player.rect.x + WEIDTH//2
+        dy = - player.rect.y + HIGHT//2
         
-        self.move = (x,y)
+        if dx < WEIDTH -  self.mapw:
+            dx = WEIDTH -  self.mapw
+        if dx > 0:
+            dx = 0
+        if dy<HIGHT - self.maph:
+            dy = HIGHT - self.maph
+        if dy> 0:
+            dy = 0
+        
+        self.move = (dx,dy)
 
     def newrectsprite(self,spriterect):
        return spriterect.move(self.move)

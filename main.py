@@ -33,12 +33,11 @@ class Game:
         self.surface = pygame.display.set_mode((self.height, self.weidth))
     def new(self):
         self.image = pygame.image.load(self.png)
-        self.player = sprites.Clasprite(self.image)
+        self.player = sprites.Clasprite(self.image,game)
         self.fps = pygame.time.Clock() 
-        self.camera = maper.Camera()
-        
-        
         self.mapp = maper.Map(self.map, self.mappng)
+        self.camera = maper.Camera(self.mapp.sizemapxe, self.mapp.sizemapye)
+        self.spritemaplist = self.mapp.plitochnikkid
         
     def events(self):
         events = pygame.event.get()
@@ -68,5 +67,5 @@ class Game:
             self.update()
             self.fps.tick(60)
 
-game = Game(WEIDTH, HIGHT, "playerpng.png", "map.csv", 'mapstaff.png')
+game = Game(WEIDTH, HIGHT, "playerpng.png", "map2.csv", 'mapstaff.png')
 game.run()
