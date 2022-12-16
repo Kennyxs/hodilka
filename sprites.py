@@ -14,12 +14,11 @@ class Clasprite(pygame.sprite.Sprite):
         self.frame = 0
         self.secanimation = 0
         self.game =  game
-        self.littlerect = pygame.rect.Rect(self.rect.x -15,self.rect.y +15, self.rect.width//2, self.rect.height//2)
+        self.littlerect = pygame.rect.Rect(self.rect.x+12 ,self.rect.y +18, self.rect.width//4, self.rect.height//4)
 
         
     def draw(self, surface, certainrect):
         surface.blit(self.delitelb, certainrect)
-
     def update(self):
         press = pygame.key.get_pressed()
         self.vector.update(0,0)
@@ -33,8 +32,11 @@ class Clasprite(pygame.sprite.Sprite):
             self.vector.x = 1
         if self.wallwalker(self.game.spritemaplist):
             self.vector.update(0,0)
+        
         self.rect.y += self.vector.y
         self.rect.x += self.vector.x
+        self.littlerect.y += self.vector.y
+        self.littlerect.x += self.vector.x
         self.animation()
 
         
@@ -74,8 +76,18 @@ class Clasprite(pygame.sprite.Sprite):
                 self.frame = 0
             
     def wallwalker(self, spritemaplist):
-        mover = self.rect.move((self.vector.x, self.vector.y))
+        mover = self.littlerect.move((self.vector.x, self.vector.y))
         for t in spritemaplist:
             if mover.colliderect(t.rect) and t.boolean is True:
                 return True
         return False
+    
+
+class NPC:
+    def __init__(self,x,y,image) -> None:
+        self.coordx = x
+        self.coordy = y
+        self.img = image
+        self.rect = image.get_rect(x = self.coordx, y = self.coordy)
+    def draw(self,surface):
+        surface.blit(self.img, self.rect)
