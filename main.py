@@ -38,6 +38,7 @@ class Game:
         self.mapp = maper.Map(self.map, self.mappng)
         self.camera = maper.Camera(self.mapp.sizemapxe, self.mapp.sizemapye)
         self.spritemaplist = self.mapp.plitochnikkid
+        self.npc = sprites.Speaker(250,150,self.mapp.imlist[121],None,1)
         
     def events(self):
         events = pygame.event.get()
@@ -51,13 +52,16 @@ class Game:
     def update(self):
         self.player.update()
         self.camera.spy(self.player)
+        self.npc.update()
         pygame.display.update()
+
 
     def draw(self):
         self.surface.fill((0,0,0))
         for plitka in self.mapp.plitochnikkid:
             plitka.draw(self.surface, self.camera.newrectsprite(plitka.rect))
         self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
+        self.npc.draw(self.surface,self.camera.newrectsprite(self.npc.rect))
     def run(self):
         stop = 1
         self.new()

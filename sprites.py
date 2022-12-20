@@ -89,5 +89,18 @@ class NPC:
         self.coordy = y
         self.img = image
         self.rect = image.get_rect(x = self.coordx, y = self.coordy)
-    def draw(self,surface):
-        surface.blit(self.img, self.rect)
+    def draw(self,surface,camera):
+        surface.blit(self.img, camera)
+
+class Speaker(NPC):
+    def __init__(self, x, y, image,speakwindow,speed) -> None:
+        self.speakwindow = speakwindow
+        self.speed = speed
+        super().__init__(x, y, image)
+    def update(self):
+        self.rect.x +=self.speed
+        if abs(self.coordx - self.rect.x) >100:
+            self.speed = -self.speed
+
+
+    
