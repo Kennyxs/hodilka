@@ -2,6 +2,7 @@ import pygame
 import sprites
 import maper
 from settings import *
+pygame.init()
 # stop = 1
 # surface = pygame.display.set_mode((500, 500))
 # image = pygame.image.load("playerpng.png")
@@ -31,6 +32,7 @@ class Game:
         self.map = map
         self.mappng = mappng
         self.surface = pygame.display.set_mode((self.height, self.weidth))
+
     def new(self):
         self.image = pygame.image.load(self.png)
         self.player = sprites.Clasprite(self.image,game)
@@ -38,7 +40,7 @@ class Game:
         self.mapp = maper.Map(self.map, self.mappng)
         self.camera = maper.Camera(self.mapp.sizemapxe, self.mapp.sizemapye)
         self.spritemaplist = self.mapp.plitochnikkid
-        self.npc = sprites.Speaker(250,150,self.mapp.imlist[121],None,1)
+        self.npc = sprites.Speaker(250,150,self.mapp.imlist[121],None,1,self)
         
     def events(self):
         events = pygame.event.get()
@@ -52,7 +54,7 @@ class Game:
     def update(self):
         self.player.update()
         self.camera.spy(self.player)
-        self.npc.update()
+        self.npc.update(self.player.rect)
         pygame.display.update()
 
 

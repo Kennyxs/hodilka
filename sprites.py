@@ -1,5 +1,6 @@
 import pygame
 import dop
+import pygame.freetype as free
 
 
 class Clasprite(pygame.sprite.Sprite):
@@ -93,14 +94,35 @@ class NPC:
         surface.blit(self.img, camera)
 
 class Speaker(NPC):
-    def __init__(self, x, y, image,speakwindow,speed) -> None:
+    def __init__(self, x, y, image,speakwindow,speed,game) -> None:
         self.speakwindow = speakwindow
         self.speed = speed
+        self.dospeed = 0
+        self.game = game
         super().__init__(x, y, image)
-    def update(self):
+    def update(self,playerrect):
         self.rect.x +=self.speed
         if abs(self.coordx - self.rect.x) >100:
             self.speed = -self.speed
+        if self.rect.colliderect(playerrect):
+            print(self.speed)
+            self.dospeed = 1
+            self.chat = Chat("hello",20,self.rect.x -10,self.rect.y -20,[255,255,255])
+            self.chat.draw()
+            self.speed = 0
+        if not self.rect.colliderect(playerrect) :
+            self.speed += self.dospeed
+            self.dospeed = 0
 
+class Chat:
+    def __init__(self,text,size,x,y,colour) -> None:
+        self.text = text
+        self.size = size
+        self.colour = colour
+        self.rect =pygame.Rect(x,y,self.size,self.size//2)
+        self.font = free.Font(None,20)
+        self.fontsurface = pygame.Surface((self.size,self.size//2))
+    def draw(self):
+        self.font.render_to(self.fontsurface,(self.rect.x,self.rect.y),self.text,self.colour)
 
     
