@@ -59,7 +59,7 @@ class Clasprite(pygame.sprite.Sprite):
     def animation(self):
         sec = pygame.time.get_ticks()
         
-        if self.vector.length() > 0  and sec - self.secanimation >= 500:
+        if self.vector.length() > 0  and sec - self.secanimation >= 200:
             self.secanimation = pygame.time.get_ticks()
             num = []
             if self.vector.y >0:
@@ -90,6 +90,7 @@ class NPC:
         self.coordy = y
         self.img = image
         self.rect = image.get_rect(x = self.coordx, y = self.coordy)
+
     def draw(self,surface,camera):
         surface.blit(self.img, camera)
 
@@ -101,28 +102,40 @@ class Speaker(NPC):
         self.game = game
         super().__init__(x, y, image)
     def update(self,playerrect):
-        self.rect.x +=self.speed
+        if not self.rect.colliderect(playerrect) :
+            self.rect.x +=self.speed
         if abs(self.coordx - self.rect.x) >100:
             self.speed = -self.speed
         if self.rect.colliderect(playerrect):
-            print(self.speed)
-            self.dospeed = 1
-            self.chat = Chat("hello",20,self.rect.x -10,self.rect.y -20,[255,255,255])
+            self.chat = Chat("hello",40,self.rect.x -10,self.rect.y -20,[255,255,255], self.game)
             self.chat.draw()
-            self.speed = 0
-        if not self.rect.colliderect(playerrect) :
-            self.speed += self.dospeed
-            self.dospeed = 0
+            
+        
+            
 
 class Chat:
-    def __init__(self,text,size,x,y,colour) -> None:
+    ciferkadraw = 0
+
+    def __init__(self,text,size,x,y,colour, game) -> None:
         self.text = text
+        self.bukvi = ""
         self.size = size
         self.colour = colour
         self.rect =pygame.Rect(x,y,self.size,self.size//2)
-        self.font = free.Font(None,20)
-        self.fontsurface = pygame.Surface((self.size,self.size//2))
+        self.font = free.Font(None,10)
+        self.fontsurface = pygame.Surface((self.size,self.size//2),pygame.SRCALPHA)
+        self.game = game
+        
     def draw(self):
-        self.font.render_to(self.fontsurface,(self.rect.x,self.rect.y),self.text,self.colour)
+        if Chat.ciferkadraw< len(self.text):
+            self.bukvi = self.text[0 : Chat.ciferkadraw]
+        else:
+            self.bukvi = self.text
+        print(Chat.ciferkadraw)
+        self.font.render_to(self.fontsurface,(2,3),self.bukvi,self.colour)
+        self.game.surface.blit(self.fontsurface, self.game.camera.newrectsprite(self.rect))
+        Chat.ciferkadraw +=1
+
+        
 
     
