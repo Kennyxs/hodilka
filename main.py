@@ -62,8 +62,8 @@ class Game:
         self.surface.fill((0,0,0))
         for plitka in self.mapp.plitochnikkid:
             plitka.draw(self.surface, self.camera.newrectsprite(plitka.rect))
-        self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
         self.npc.draw(self.surface,self.camera.newrectsprite(self.npc.rect))
+        self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
     def run(self):
         stop = 1
         self.new()

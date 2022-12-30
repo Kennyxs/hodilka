@@ -81,8 +81,10 @@ class Clasprite(pygame.sprite.Sprite):
         for t in spritemaplist:
             if mover.colliderect(t.rect) and t.boolean is True:
                 return True
+        if mover.colliderect(self.game.npc.rect):
+            return True
         return False
-    
+        
 
 class NPC:
     def __init__(self,x,y,image) -> None:
@@ -104,12 +106,13 @@ class Speaker(NPC):
     def update(self,playerrect):
         if not self.rect.colliderect(playerrect) :
             self.rect.x +=self.speed
+            Chat.nuler()
         if abs(self.coordx - self.rect.x) >100:
             self.speed = -self.speed
         if self.rect.colliderect(playerrect):
             self.chat = Chat("hello",40,self.rect.x -10,self.rect.y -20,[255,255,255], self.game)
             self.chat.draw()
-            
+        
         
             
 
@@ -126,16 +129,19 @@ class Chat:
         self.fontsurface = pygame.Surface((self.size,self.size//2),pygame.SRCALPHA)
         self.game = game
         
+        
     def draw(self):
         if Chat.ciferkadraw< len(self.text):
-            self.bukvi = self.text[0 : Chat.ciferkadraw]
+            self.bukvi = self.text[0 : int(Chat.ciferkadraw)]
         else:
             self.bukvi = self.text
         print(Chat.ciferkadraw)
+        self.fontsurface.fill((0,0,0,50))
         self.font.render_to(self.fontsurface,(2,3),self.bukvi,self.colour)
         self.game.surface.blit(self.fontsurface, self.game.camera.newrectsprite(self.rect))
-        Chat.ciferkadraw +=1
-
-        
+        Chat.ciferkadraw +=0.2
+    @classmethod
+    def nuler(cls):
+        Chat.ciferkadraw = 0
 
     
