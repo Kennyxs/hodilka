@@ -1,6 +1,7 @@
 import pygame
 import dop
 import pygame.freetype as free
+import random 
 
 
 class Clasprite(pygame.sprite.Sprite):
@@ -16,7 +17,7 @@ class Clasprite(pygame.sprite.Sprite):
         self.secanimation = 0
         self.game =  game
         self.littlerect = pygame.rect.Rect(self.rect.x+12 ,self.rect.y +18, self.rect.width//4, self.rect.height//4)
-
+        self.whatihave = {'weaponsword' : False, 'weapontree' : False}
         
     def draw(self, surface, certainrect):
         surface.blit(self.delitelb, certainrect)
@@ -33,7 +34,7 @@ class Clasprite(pygame.sprite.Sprite):
             self.vector.x = 1
         if self.wallwalker(self.game.spritemaplist):
             self.vector.update(0,0)
-        
+        self.collidetree()
         self.rect.y += self.vector.y
         self.rect.x += self.vector.x
         self.littlerect.y += self.vector.y
@@ -84,7 +85,10 @@ class Clasprite(pygame.sprite.Sprite):
         if mover.colliderect(self.game.npc.rect):
             return True
         return False
-        
+    def collidetree(self):
+        if self.rect.colliderect(self.game.weapontree.rect):
+            print("tree")    
+
 
 class NPC:
     def __init__(self,x,y,image) -> None:
@@ -106,7 +110,7 @@ class Speaker(NPC):
     def update(self,playerrect):
         if not self.rect.colliderect(playerrect) :
             self.rect.x +=self.speed
-            Chat.nuler()
+            Chat.nuler()            
         if abs(self.coordx - self.rect.x) >100:
             self.speed = -self.speed
         if self.rect.colliderect(playerrect):
@@ -144,4 +148,46 @@ class Chat:
     def nuler(cls):
         Chat.ciferkadraw = 0
 
-    
+class evilnpc(NPC):
+    def __init__(self, x, y, image,game) -> None:
+        self.game = game
+        self.lives = 3
+        self.times = 0
+        self.speedx = 1
+        self.speedy = 1
+        self.wanish = 0
+        super().__init__(x, y, image)
+    def draw(self,surface,camers):
+        super().draw(surface,camers)
+        self.ivlnight = pygame.Surface(self.img.get_size(), pygame.SRCALPHA)
+        self.ivlnight.fill((0,0,0,self.wanish))
+        surface.blit(self.ivlnight,camers)
+    def update(self):
+        if pygame.time.get_ticks()-self.times>= 500:
+            self.speedx = random.choice([int(random.random()*5), int(-random.random()*5)])
+            self.speedy = random.choice([int(random.random()*5), int(-random.random()*5)])
+            print(self.speedx,self.speedy)
+            self.times = pygame.time.get_ticks()
+        if abs(self.coordx -self.rect.x) >=100 :
+            self.speedx = -self.speedx
+        if abs(self.coordy - self.rect.y) >=100:
+            self.speedy = -self.speedy
+        self.rect.x +=self.speedx
+        self.rect.y += self.speedy
+
+
+class Weapontree:
+    def __init__(self, x,y,image,game):
+        self.x = x
+        self.y = y
+        self.image = image
+        self.rect = self.image.get_rect(x = self.x, y = self.y)
+        self.game = game
+        self.speed = 10
+    def draw(self,surface):
+        surface.blit(self.image, self.game.camera.newrectsprite(self.rect))
+    def update(self):
+        if self.speed > 0:
+            self.rect.x += self.speed
+            self.speed -= 1
+        

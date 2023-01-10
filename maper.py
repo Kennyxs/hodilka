@@ -76,8 +76,14 @@ class Plitka:
         self.rect = plitaimg.get_rect(topleft = (x, y))
         self.number = number
         self.boolean = True if number in WALL_IDS else False
+        self.noprozrachno = 0
+        
     def draw(self,surface,newrect):
+        
         surface.blit(self.plitaimg, newrect)
+        self.night = pygame.surface.Surface([self.rect.w,self.rect.h],pygame.SRCALPHA)
+        self.night.fill((0,0,0,self.noprozrachno))
+        surface.blit(self.night, newrect)
 
 
 

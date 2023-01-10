@@ -41,7 +41,33 @@ class Game:
         self.camera = maper.Camera(self.mapp.sizemapxe, self.mapp.sizemapye)
         self.spritemaplist = self.mapp.plitochnikkid
         self.npc = sprites.Speaker(250,150,self.mapp.imlist[121],None,1,self)
-        
+        self.ivlnpc = sprites.evilnpc(500,300,self.mapp.imlist[125],self)
+        self.weapontree = sprites.Weapontree(200,200,self.mapp.imlist[118], self)
+    def neprozrach(self):
+        a =abs(self.player.rect.x - self.ivlnpc.rect.x)
+        b = abs(self.player.rect.y - self.ivlnpc.rect.y)
+        c = (a*a+b*b)**0.5
+        for t in self.mapp.plitochnikkid:
+            d =abs(self.player.rect.x - t.rect.x)
+            e = abs(self.player.rect.y - t.rect.y)
+            f = (d*d+e*e)**0.5
+            if c<200 and f>70:
+                t.noprozrachno = 250
+                
+            else:
+                
+                if t.noprozrachno >20:
+                    t.noprozrachno -= 10
+                else:
+                    t.noprozrachno = 0
+        if c>70 and c<200:
+            self.ivlnpc.wanish = 250
+        else:
+            if self.ivlnpc.wanish >5:
+                self.ivlnpc.wanish -=5
+            else: 
+                self.ivlnpc.wanish = 0    
+
     def events(self):
         events = pygame.event.get()
         stop = 1
@@ -55,6 +81,8 @@ class Game:
         self.player.update()
         self.camera.spy(self.player)
         self.npc.update(self.player.rect)
+        self.ivlnpc.update()
+        self.neprozrach()
         pygame.display.update()
 
 
@@ -63,7 +91,9 @@ class Game:
         for plitka in self.mapp.plitochnikkid:
             plitka.draw(self.surface, self.camera.newrectsprite(plitka.rect))
         self.npc.draw(self.surface,self.camera.newrectsprite(self.npc.rect))
+        self.ivlnpc.draw(self.surface,self.camera.newrectsprite(self.ivlnpc.rect))
         self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
+        self.weapontree.draw(self.surface)
     def run(self):
         stop = 1
         self.new()
