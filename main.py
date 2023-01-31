@@ -43,6 +43,10 @@ class Game:
         self.npc = sprites.Speaker(250,150,self.mapp.imlist[121],None,1,self)
         self.ivlnpc = sprites.evilnpc(500,300,self.mapp.imlist[125],self)
         self.weapontree = sprites.Weapontree(200,200,self.mapp.imlist[118], self)
+        self.group = sprites.Group()
+        self.test_event = pygame.USEREVENT
+        pygame.time.set_timer(self.test_event, 500)
+        self.tick = 1
     def neprozrach(self):
         a =abs(self.player.rect.x - self.ivlnpc.rect.x)
         b = abs(self.player.rect.y - self.ivlnpc.rect.y)
@@ -52,7 +56,7 @@ class Game:
             e = abs(self.player.rect.y - t.rect.y)
             f = (d*d+e*e)**0.5
             if c<200 and f>70:
-                t.noprozrachno = 250
+                t.noprozrachno = 0
                 
             else:
                 
@@ -72,17 +76,33 @@ class Game:
         events = pygame.event.get()
         stop = 1
         for e_now in events:
+            if e_now.type == pygame.constants.MOUSEBUTTONDOWN and self.player.whatihave['weapontree'] is True:
+                self.weapontree.rect.center = self.player.rect.center
+                self.player.whatihave['weapontree'] = False
+                self.weapontree.flytree = True
+                self.weapontree.clickpos = e_now.pos
+            if e_now.type == pygame.constants.KEYDOWN and e_now.key == pygame.constants.K_SPACE:
+                self.light = sprites.Light(0,0,'rect', BLUE,[WEIDTH,HIGHT],self)
+                self.group.append(self.light)
+            if self.ivlnpc.attack is False:
+                if e_now.type == self.test_event:
+                    self.ivlnpc.attack = True
+                
             if e_now.type == pygame.constants.QUIT:
                 stop = -1
             else:
                 stop = 1
+        
         return stop
     def update(self):
+        pygame.display.set_caption(f"{int(self.fps.get_fps())}")
         self.player.update()
         self.camera.spy(self.player)
         self.npc.update(self.player.rect)
         self.ivlnpc.update()
         self.neprozrach()
+        self.weapontree.update()
+        self.group.update()
         pygame.display.update()
 
 
@@ -90,10 +110,12 @@ class Game:
         self.surface.fill((0,0,0))
         for plitka in self.mapp.plitochnikkid:
             plitka.draw(self.surface, self.camera.newrectsprite(plitka.rect))
+
         self.npc.draw(self.surface,self.camera.newrectsprite(self.npc.rect))
         self.ivlnpc.draw(self.surface,self.camera.newrectsprite(self.ivlnpc.rect))
-        self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
         self.weapontree.draw(self.surface)
+        self.player.draw(self.surface, self.camera.newrectsprite(self.player.rect))
+        self.group.draw(self.surface)
     def run(self):
         stop = 1
         self.new()
@@ -101,7 +123,8 @@ class Game:
             stop = self.events()
             self.draw()
             self.update()
-            self.fps.tick(60)
+            self.tick = self.fps.tick(60)
+            
 
 game = Game(WEIDTH, HIGHT, "playerpng.png", "map2.csv", 'mapstaff.png')
 game.run()
